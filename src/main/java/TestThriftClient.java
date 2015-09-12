@@ -24,9 +24,9 @@ import java.lang.String;
 public class TestThriftClient {
     private static final String DATA_STREAM = "streaming_data";
     private static final String VERSION = "1.0.0";
-    private static final String SAMPLE_STREAM_PATH = System.getProperty("user.dir") + "/resources/sample_only_50.csv";
-    private static final int defaultThriftPort = 7611;
-    private static final int defaultBinaryPort = 9611;
+    private static String SAMPLE_STREAM_PATH = System.getProperty("user.dir") + "/resources/sample_only_5.csv";
+    private static int defaultThriftPort = 30135;
+    private static int defaultBinaryPort = 30051;
 
     public static void main(String[] args) throws DataEndpointAuthenticationException,
             DataEndpointAgentConfigurationException,
@@ -36,20 +36,36 @@ public class TestThriftClient {
             FileNotFoundException,
             SocketException,
             UnknownHostException {
+
+        String host = getLocalAddress().getHostAddress();
+
+        System.out.println(args);
+
+        if (args.length == 0 )
+        {
+            System.out.println("Please provide - file location, receiver ip and port");
+        }
+        else
+        {
+            SAMPLE_STREAM_PATH = args[0];
+            host = args[1];
+            defaultThriftPort = Integer.parseInt(args[2]);
+
+        }
+
         System.out.println("Starting stream");
         String currentDir = System.getProperty("user.dir");
-        System.setProperty("javax.net.ssl.trustStore", currentDir + "/src/main/resources/client-truststore.jks");
+        System.setProperty("javax.net.ssl.trustStore", currentDir + "client-truststore.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
 
         AgentHolder.setConfigPath(getDataAgentConfigPath());
-        String host = getLocalAddress().getHostAddress();
 
         String type = getProperty("type", "Thrift");
         int receiverPort = defaultThriftPort;
         if (type.equals("Binary")) {
             receiverPort = defaultBinaryPort;
         }
-        int securePort = receiverPort + 100;
+        int securePort = receiverPort + 1;
 
         String url = getProperty("url", "tcp://" + host + ":" + receiverPort);
         String authURL = getProperty("authURL", "ssl://" + host + ":" + securePort);
@@ -59,6 +75,7 @@ public class TestThriftClient {
         DataPublisher dataPublisher = new DataPublisher(type, url, authURL, username, password);
 
         String streamId = DataBridgeCommonsUtils.generateStreamId(DATA_STREAM, VERSION);
+        System.out.println(streamId);
         publishLogEvents(dataPublisher, streamId);
         try {
             Thread.sleep(2000);
@@ -69,7 +86,7 @@ public class TestThriftClient {
     }
 
     public static String getDataAgentConfigPath() {
-        File filePath = new File("src" + File.separator + "main" + File.separator + "resources");
+        File filePath = new File("src" + File.separator + "resources");
         if (!filePath.exists()) {
             filePath = new File("test" + File.separator + "resources");
         }
