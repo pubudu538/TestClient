@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.*;
+import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.Scanner;
 import java.lang.String;
@@ -27,6 +28,7 @@ public class TestThriftClient {
     private static String SAMPLE_STREAM_PATH = System.getProperty("user.dir") + "/resources/sample_only_5.csv";
     private static int defaultThriftPort = 30135;
     private static int defaultBinaryPort = 30051;
+    java.util.Date date = new java.util.Date();
 
     public static void main(String[] args) throws DataEndpointAuthenticationException,
             DataEndpointAgentConfigurationException,
@@ -103,7 +105,8 @@ public class TestThriftClient {
         Scanner scanner = new Scanner(new FileInputStream(SAMPLE_STREAM_PATH));
         int i = 1;
         while (scanner.hasNextLine()) {
-            System.out.println("Publish streaming event : " + i);
+            String timestamp = new Timestamp(System.currentTimeMillis()).toString();
+            System.out.println(timestamp + " Publish streaming event : " + i);
             String anEntry = scanner.nextLine();
             String[] separatedEntries = anEntry.split(",");
             Object[] payload = new Object[]{
@@ -114,7 +117,7 @@ public class TestThriftClient {
                     };
             Event event = new Event(streamId, System.currentTimeMillis(), new Object[]{"electricityConsumption"}, null,
                     payload);
-            dataPublisher.publish(event);
+            dataPublisher.tryPublish(event);
             i++;
         }
 

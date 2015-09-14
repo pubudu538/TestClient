@@ -31,4 +31,4 @@ class_path=`echo ${lib_path}/*.jar | tr ' ' ':'`
 # Uncomment below line to enable remote debugging
 #debug="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 
-java -cp "${class_path}" TestThriftClient /home/pubudu/WSO2/temp/publisher/TestClient/resources/sample_only_5.csv 23.253.251.202 30063 $*
+nohup java -cp "${class_path}" TestThriftClient /home/pubudu/WSO2/temp/publisher/TestClient/resources/sample_only_5.csv 23.253.251.202 30063 $* > publisher.log &
