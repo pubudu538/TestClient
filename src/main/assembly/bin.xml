@@ -30,7 +30,7 @@
             <outputDirectory>/bin</outputDirectory>
             <fileMode>0755</fileMode>
             <includes>
-                <include>test-client.sh</include>
+                <include>run.sh</include>
             </includes>
         </fileSet>
         <fileSet>

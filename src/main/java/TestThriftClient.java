@@ -74,6 +74,8 @@ public class TestThriftClient {
         String username = getProperty("username", "admin");
         String password = getProperty("password", "admin");
 
+        System.out.println("Data Location - "+SAMPLE_STREAM_PATH);
+        System.out.println("End point details - "+host+":"+receiverPort);
         DataPublisher dataPublisher = new DataPublisher(type, url, authURL, username, password);
 
         String streamId = DataBridgeCommonsUtils.generateStreamId(DATA_STREAM, VERSION);
